@@ -102,10 +102,10 @@
         map.latitude = position.latitude;
       } catch (e) {
         console.error('Could not get initial position', e);
-        position.longitude = 4.8322; // Pour afficher les parkings même sans position (TEST SEULEMENT - A SUPPRIMER)
-        position.latitude = 45.7578; // IDEM  ----------------------------------------------------------------------
-        map.longitude =  4.8322; 
-        map.latitude = 45.7578;
+        position.longitude = 0.1278; // Pour afficher les parkings même sans position (TEST SEULEMENT - A SUPPRIMER)
+        position.latitude = 51.5074; // IDEM  ----------------------------------------------------------------------
+        map.longitude =  0.1278; 
+        map.latitude = 51.5074;
       }
 
       map.loadMap();

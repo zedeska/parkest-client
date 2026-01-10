@@ -2,10 +2,14 @@ import { LngLat } from "@maptiler/sdk";
 import { normalizeLyonParking } from "./parkingNormalizationUtils/normalizeLyonParking";
 import { normalizeParisParking} from "./parkingNormalizationUtils/normalizeParisParking"
 import { normalizeTflParking } from "./parkingNormalizationUtils/normalizeTflParking";
+const apiLyon = import.meta.env.VITE_LYON_KEY;
+const apiMetz = import.meta.env.VITE_METZ_KEY;
+const apiParis = import.meta.env.VITE_PARIS_KEY;
+const apiTfl = import.meta.env.VITE_TFL_KEY;
+
 export class Parking {
     parkingsDsp : any[] = [];
     parkings : any[] = [];
-    private readonly TFL_API_KEY = "06dcde4d1865490d943d578017cd8518"; // Clé récupérer suite à inscription
 // prefence : [0] gratuit seulement , [1] pmr seulement, [2] borne de recharge seulement
     getParkingPreference(parkings : any[], position: LngLat, preference: number[]){
         if(preference[0] === 1){
@@ -68,7 +72,7 @@ export class Parking {
         this.parkings = [];
         this.parkingsDsp = [];
         try {
-            const metzResponse = await fetch('https://maps.eurometropolemetz.eu/public/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=public:pub_tsp_sta&srsName=EPSG:4326&outputFormat=application%2Fjson&cql_lter=id%20is%20not%20null');
+            const metzResponse = await fetch(apiMetz);
             const metzData = await metzResponse.json();
 
             for(let feature of metzData.features){
@@ -97,7 +101,7 @@ export class Parking {
         }
 
         try {
-            const tflUrl = `https://api.tfl.gov.uk/Place/Type/CarPark?app_key=${this.TFL_API_KEY}`;
+            const tflUrl = apiTfl;
             const tflResponse = await fetch(tflUrl);
 
             if(!tflResponse.ok){
@@ -113,7 +117,7 @@ export class Parking {
             console.error('Failed to fetch TFL parkings: ', e);
         }
         try {
-            const parisUrl = 'https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/stationnement-en-ouvrage/records?limit=100';
+            const parisUrl = apiParis;
             const parisResponse = await fetch(parisUrl);
             
             if(!parisResponse.ok) {
@@ -130,7 +134,7 @@ export class Parking {
             console.error('Failed to fetch Paris parkings: ', e);
         }
         try {
-            const lyonUrl = 'https://data.grandlyon.com/fr/geoserv/ogc/features/v1/collections/metropole-de-lyon:parkings-de-la-metropole-de-lyon-disponibilites-temps-reel-v2/items?&f=application/geo%2Bjson&crs=EPSG:4171&startIndex=0&sortby=gid';
+            const lyonUrl = apiLyon;
             
             const lyonResponse = await fetch(lyonUrl);
             
