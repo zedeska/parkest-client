@@ -18,7 +18,7 @@
 
   const user : User = new User(136, false, false);
   const stored = localStorage.getItem('user');
-
+  let hasArrived = false;
   if (stored) {
     const parsed = JSON.parse(stored);
     user.hauteur = parsed.hauteur;
@@ -58,7 +58,9 @@
     const currentMap = get(mapStore);
     if (currentMap) {
       currentMap.clearRoute();
+      currentMap.map.easeTo({pitch: 0, bearing:0,zoom:15});
     }
+    hasArrived = false;
   }
 
   // refresh markers when dspOnly changes and map exists
@@ -107,23 +109,51 @@
       }
 
       map.loadMap();
-      position.setWatcher(map.setPosition.bind(map));
+      position.setWatcher((lat: number, lng: number) => {
+        map!.setPosition(lat, lng);
+        const currentRoute = get(routingState);
+        if(currentRoute.isVisible && currentRoute.LngLat && !hasArrived){
+          const userLocation = new LngLat(lng, lat);
+          const destinationLocation = new LngLat(currentRoute.LngLat.lng, currentRoute.LngLat.lat);
+          const distance = userLocation.distanceTo(destinationLocation);
+
+          if(distance < 40){
+            hasArrived = true;
+            triggerArrivalAnimation(map,destinationLocation);
+            console.log("Vous êtes arrivé à destination !");
+          }
+        }
+      });
       await parking.fetchParkings();
       console.log(parking.parkings.length + ' parkings loaded');
       const largeRadius = 50000; 
-      map.setParkingMarkers(parking.getNearParkings(new LngLat(position.longitude, position.latitude), $UserContent.dspOnly, largeRadius));
+      map.setParkingMarkers(parking.getNearParkings(new LngLat(position.longitude, position.latitude), $UserContent.dspOnly, largeRadius, [0,0,0]));
     } else {
       map.loadMap();
       
       // Re-attach watcher
-      position.setWatcher(map.setPosition.bind(map));
+      position.setWatcher((lat: number, lng: number) => {
+        map!.setPosition(lat, lng);
+        const currentRoute = get(routingState);
+        if(currentRoute.isVisible && currentRoute.LngLat && !hasArrived){
+          const userLocation = new LngLat(lng, lat);
+          const destinationLocation = new LngLat(currentRoute.LngLat.lng, currentRoute.LngLat.lat);
+          const distance = userLocation.distanceTo(destinationLocation);
+
+          if(distance < 4000){
+            hasArrived = true;
+            triggerArrivalAnimation(map, destinationLocation);
+            console.log("Vous êtes arrivé à destination !");
+          }
+        }
+      });
       
       // Check if we need to fetch
       if (parking.parkings.length === 0) {
          await parking.fetchParkings();
       }
       const largeRadius = 50000; 
-      map.setParkingMarkers(parking.getNearParkings(new LngLat(position.longitude, position.latitude), $UserContent.dspOnly, largeRadius));
+      map!.setParkingMarkers(parking.getNearParkings(new LngLat(position.longitude, position.latitude), $UserContent.dspOnly, largeRadius));
     }
 
       const routeState = get(routingState);
@@ -132,6 +162,17 @@
         map.drawRoute(routeState.LngLat.lng, routeState.LngLat.lat, routeState.destination);
       }
     }
+  function triggerArrivalAnimation(mapInstance: any, target: LngLat) {
+    if (!mapInstance || !mapInstance.map) return;
+    mapInstance.map.flyTo({
+        center: target,
+        zoom: 18,
+        pitch: 60,
+        bearing: -45,
+        speed: 0.8,
+        essential: true
+  });
+}
 </script>
 
 <main class="flex flex-col justify-center items-center" style="height: {deviceHeight}px; width: {deviceWidth}px; ">

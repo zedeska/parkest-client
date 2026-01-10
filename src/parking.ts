@@ -25,7 +25,7 @@ export class Parking {
         }       
         return parkings;
     }
-    getNearParkings(position: LngLat, dspOnly: boolean, radius: number = 3000, preference = []) {
+    getNearParkings(position: LngLat, dspOnly: boolean, radius: number = 3000, preference : number[] = [0,0,0]) {
         let nearbyParkings = [];
         
         const dspParkings = this.parkingsDsp.filter(parking => {
