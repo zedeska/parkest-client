@@ -5,7 +5,7 @@ import { routingState } from './stores/routingStore';
 class Map {
     map: maptilersdk.Map = {} as maptilersdk.Map;
     private API_KEY: string = '1nbw0HVdWw3MdIEhMg9Z';
-    private GH_API_KEY: string = 'bf6b9543-329f-4e71-b34e-8e1564b47d95'; // Replace with your actual GraphHopper API key
+    private GH_API_KEY: string = 'bf6b9543-329f-4e71-b34e-8e1564b47d95';
     private routing: Routing;
     longitude: number = 0;
     latitude: number = 0;

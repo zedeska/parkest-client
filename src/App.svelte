@@ -12,24 +12,13 @@
   import Home from './routes/Home.svelte';
   import Params from './routes/Params.svelte';
   import RoutingComponent from './components/Routing.svelte';
-  import { writable, get } from 'svelte/store';
+  import LoginRegisterForm from './components/LoginRegisterForm.svelte';
+  import { get } from 'svelte/store';
   import { routingState } from './stores/routingStore';
   import { mapStore } from './stores/mapStore';
+  import { UserContent } from './stores/userStore';
 
-  const user : User = new User(136, false, false);
-  const stored = localStorage.getItem('user');
   let hasArrived = false;
-  if (stored) {
-    const parsed = JSON.parse(stored);
-    user.hauteur = parsed.hauteur;
-    user.pmr = parsed.pmr;
-    user.dspOnly = parsed.dspOnly;
-  }
-
-  const UserContent = writable(user);
-  UserContent.subscribe(value => {
-    localStorage.setItem('user', JSON.stringify(value));
-  });
 
   const routes: RouteConfig[] = [
     {
@@ -129,6 +118,7 @@
       const largeRadius = 50000; 
       map.setParkingMarkers(parking.getNearParkings(new LngLat(position.longitude, position.latitude), $UserContent.dspOnly, largeRadius, [0,0,0]));
     } else {
+      console.log('Using existing Map instance');
       map.loadMap();
       
       // Re-attach watcher
@@ -177,12 +167,19 @@
 
 <main class="flex flex-col justify-center items-center" style="height: {deviceHeight}px; width: {deviceWidth}px; ">
 
-  <Navbar bind:open={openSideMenu} />
+  {#if $UserContent.token === ""}
 
-  {#if $routingState.isVisible}
-    <RoutingComponent destination={$routingState.destination} />
+    <LoginRegisterForm UserContent={UserContent} />
+
+  {:else}
+
+    <Navbar bind:open={openSideMenu} />
+
+    {#if $routingState.isVisible}
+      <RoutingComponent destination={$routingState.destination} />
+    {/if}
+
+    <Router {routes} />
+
   {/if}
-
-  <Router {routes} />
-
 </main>

@@ -27,6 +27,7 @@
     "@maptiler/sdk": "^3.8.0",
     "@mateothegreat/svelte5-router": "^2.16.19",
     "@tailwindcss/vite": "^4.1.17",
+    "axios": "^1.13.2",
     "tailwindcss": "^4.1.17"
   }
 }
