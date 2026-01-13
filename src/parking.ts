@@ -2,6 +2,7 @@ import { LngLat } from "@maptiler/sdk";
 import { normalizeLyonParking } from "./parkingNormalizationUtils/normalizeLyonParking";
 import { normalizeParisParking} from "./parkingNormalizationUtils/normalizeParisParking"
 import { normalizeTflParking } from "./parkingNormalizationUtils/normalizeTflParking";
+import { normalizeMetzParking } from "./parkingNormalizationUtils/normalizeMetzParking";
 const apiLyon = import.meta.env.VITE_LYON_KEY;
 const apiMetz = import.meta.env.VITE_METZ_KEY;
 const apiParis = import.meta.env.VITE_PARIS_KEY;
@@ -72,31 +73,13 @@ export class Parking {
         this.parkings = [];
         this.parkingsDsp = [];
         try {
-            const metzResponse = await fetch(apiMetz);
+        const metzResponse = await fetch(apiMetz);
+        if (metzResponse.ok) {
             const metzData = await metzResponse.json();
-
-            for(let feature of metzData.features){
-                const parkingData = {
-                    id: feature.id,
-                    type: feature.properties.typ,
-                    lib: feature.properties.lib,
-                    place_tot: feature.properties.place_total,
-                    place_dispo: feature.properties.place_libre,
-                    payant: feature.properties.cout === null ? false : true,
-                    pmr : 0,
-                    borne_recharge : 0,
-                    cout: feature.properties.cout,
-                    coordinates: {
-                        lattitude: feature.geometry.coordinates[1],
-                        longitude: feature.geometry.coordinates[0]
-                    },
-                    city: 'Metz'
-                };
-                if(parkingData.place_dispo !== null && parkingData.place_tot !== null){
-                    this.parkingsDsp.push(parkingData);
-                } else{
-                    this.parkings.push(parkingData);
-                }
+            if (metzData.features) {
+                const normalizedMetz = normalizeMetzParking(metzData.features);
+                this.parkings.push(...normalizedMetz);
+            }
             }
         } catch (e) {
             console.error('Failed to fetch Metz parkings: ', e);

@@ -4,7 +4,7 @@ export function normalizeLyonParking(lyonData: any[]){
             const props = feature.properties; 
             const geom = feature.geometry;   
             if(geom && geom.coordinates){
-                if (props.etat = "ouvert"){
+                if (props.etat === "ouvert"){
                     normalized.push({
                     id: props.gid,
                     type: props.type_ouvrage === "ouvrage" ? "Parking" : (props.type_ouvrage || "Parking"),
