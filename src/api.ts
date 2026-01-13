@@ -11,7 +11,7 @@ export async function Login(username: string, password: string) {
     console.error("Erreur de connexion détaillée :", error);
     throw new Error("login failed");
   }
-}
+} 
 
 export async function Register(username: string, password: string) {
   try {
