@@ -33,8 +33,9 @@ class User {
     async register(username: string, password: string): Promise<void> {
         try {
             const data = await Register(username, password);
-            this.token = data.token || data;
+            this.token = data.token; // Utilise directement .token
             this.username = username;
+            // Optionnel : tu peux aussi initialiser les params par défaut ici
         } catch (error) {
             throw error;
         }
