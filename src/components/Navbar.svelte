@@ -41,11 +41,7 @@
             </label>
         </div>
 
-        <button class="cursor-pointer text-left p-2 hover:bg-gray-100 rounded flex items-center gap-3" 
-                on:click={() => { goto("/parametres"); open = false; }}>
-            <i class="fa-solid fa-gear text-gray-600 w-6"></i>
-            <span class="font-medium">Paramètres</span>
-        </button>
+
     </div>
 </aside>
 

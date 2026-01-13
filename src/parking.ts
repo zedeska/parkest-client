@@ -7,7 +7,6 @@ const apiLyon = import.meta.env.VITE_LYON_KEY;
 const apiMetz = import.meta.env.VITE_METZ_KEY;
 const apiParis = import.meta.env.VITE_PARIS_KEY;
 const apiTfl = import.meta.env.VITE_TFL_KEY;
-
 export class Parking {
     parkingsDsp : any[] = [];
     parkings : any[] = [];
@@ -78,7 +77,7 @@ export class Parking {
             const metzData = await metzResponse.json();
             if (metzData.features) {
                 const normalizedMetz = normalizeMetzParking(metzData.features);
-                this.parkings.push(...normalizedMetz);
+                this.parkingsDsp.push(...normalizedMetz);
             }
             }
         } catch (e) {

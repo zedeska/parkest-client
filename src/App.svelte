@@ -19,7 +19,7 @@
   import { UserContent } from './stores/userStore';
 
   let hasArrived = false;
-
+  let isInitialLoading = true;
   const routes: RouteConfig[] = [
     {
       component: Home,
@@ -57,6 +57,9 @@
   // refresh markers when dspOnly changes and map exists
   $: if ($mapStore && $UserContent) {
     (async () => {
+      if (parking.parkings.length === 0 && parking.parkingsDsp.length === 0) {
+        return;
+      }
       try {
         const prefs = [
           $UserContent.free ? 1 : 0,
@@ -71,7 +74,7 @@
           prefs
         );
 
-        if(filtered.length === 0){
+        if (filtered.length === 0 && !isInitialLoading) {
           showNoResultWarning = true;
           setTimeout(() => { showNoResultWarning = false; }, 3000);  
         } else {
@@ -136,6 +139,7 @@
         }
       });
       await parking.fetchParkings();
+      isInitialLoading = false;
       console.log(parking.parkings.length + ' parkings loaded');
       const largeRadius = 50000; 
       map.setParkingMarkers(parking.getNearParkings(new LngLat(position.longitude, position.latitude), $UserContent.dspOnly, largeRadius, [0,0,0]));
