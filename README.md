@@ -14,7 +14,7 @@ L'application repose sur une architecture **Full-Stack** moderne :
 * **Back-end :** API REST construite avec **Node.js** et **Express**. Hébergée sur **Render**.
 * **Base de données :** **MongoDB Atlas** (NoSQL) pour le stockage des utilisateurs et de leurs préférences.
 * **Mobile :** Porté sur Android via **Capacitor**.
-* 
+  
 [🚀 Accéder à l'API sur GitHub](https://github.com/capitainekiwi88-glitch/parking-api)
 ---
 
@@ -69,4 +69,5 @@ Le projet utilise des variables d'environnement pour protéger les données sens
 * **Cold Start :** Sur Render (version gratuite), l'API peut mettre 30 secondes à répondre lors de la première requête après une inactivité.
 * **CORS :** L'API est configurée pour accepter les requêtes provenant du domaine Vercel.
 * **Permissions :** La géolocalisation nécessite une connexion HTTPS (fournie par Vercel) pour fonctionner sur navigateur mobile.
+
 
