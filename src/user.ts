@@ -1,16 +1,15 @@
 import { GetParams, Login, Register, UpdateParams } from "./api";
 
-class User{
-
+export class User {
     hauteur: number;
     pmr: boolean;
     dspOnly: boolean;
     elec: boolean;
     free: boolean;
     username: string = "";
-    token:  string = "";
+    token: string = "";
     
-    constructor(hauteur: number, pmr: boolean,elec: boolean,free: boolean, dspOnly: boolean){
+    constructor(hauteur: number, pmr: boolean, elec: boolean, free: boolean, dspOnly: boolean) {
         this.hauteur = hauteur;
         this.pmr = pmr;
         this.elec = elec;
@@ -26,10 +25,12 @@ class User{
             throw error;
         }
     }
+}
 
-    async register(username: string, password: string): Promise<void>{
+    async register(username: string, password: string): Promise<void> {
         try {
-            this.token = await Register(username, password);
+            const data = await Register(username, password);
+            this.token = data.token;
             this.username = username;
         } catch (error) {
             throw error;
